@@ -26,3 +26,7 @@ Thumbs.db
 # Environment
 .env
 .env.*
+
+# Artefacts de déploiement
+caretrack-backend-0.0.1-SNAPSHOT.jar
+web/
