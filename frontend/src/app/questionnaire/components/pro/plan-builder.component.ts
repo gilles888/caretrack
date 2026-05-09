@@ -366,14 +366,14 @@ const MODULES: ModuleConfig[] = [
                               <div class="grid grid-cols-2 gap-2">
                                 <!-- Fréquence -->
                                 <div class="flex flex-col gap-1">
-                                  <label class="text-xs text-gray-400">{{ 'pro.builder.freq' | translate }}</label>
+                                  <label class="text-xs text-gray-400">{{ 'pro.builder.freqTitle' | translate }}</label>
                                   <p-select
                                     [options]="frequenceOptions"
                                     [(ngModel)]="item.frequence"
                                     optionLabel="label"
                                     optionValue="value"
                                     (onChange)="onFrequenceChange(item, $event.value)"
-                                    [ariaLabel]="('pro.builder.freq' | translate) + ' ' + item.templateNom"
+                                    [ariaLabel]="('pro.builder.freqTitle' | translate) + ' ' + item.templateNom"
                                   />
                                 </div>
 
