@@ -224,6 +224,7 @@
       },
       "confirmApply": {
         "header": "Application en masse",
+        "message": "Appliquer ce plan à tous les patients atteints de",
         "accept": "Appliquer",
         "reject": "Annuler"
       },
@@ -352,7 +353,6 @@
     "noData": "Aucune donnée disponible",
     "appName": "CareTrack",
     "back": "Retour",
-    "refresh": "Actualiser",
-    "save": "Enregistrer"
+    "refresh": "Actualiser"
   }
 }

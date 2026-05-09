@@ -224,6 +224,7 @@
       },
       "confirmApply": {
         "header": "Massale toepassing",
+        "message": "Dit plan toepassen op alle patiënten met",
         "accept": "Toepassen",
         "reject": "Annuleren"
       },

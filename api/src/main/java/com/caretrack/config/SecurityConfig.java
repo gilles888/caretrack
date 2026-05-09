@@ -1,6 +1,6 @@
 package com.caretrack.config;
 
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -22,20 +22,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity  // Prépare Phase 2 : @PreAuthorize sur les méthodes de service/controller
 public class SecurityConfig {
 
+    @Value("${spring.h2.console.enabled:false}")
+    private boolean h2ConsoleEnabled;
+
+    @Value("${spring.h2.console.path:/h2-console}")
+    private String h2ConsolePath;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(PathRequest.toH2Console()).permitAll()
-                .requestMatchers("/api/v1/**").permitAll()           // Phase 1 : tout ouvert
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .csrf(csrf -> csrf
-                .disable()  // Désactivé pour les appels REST stateless
-            )
+            .authorizeHttpRequests(auth -> {
+                if (h2ConsoleEnabled) {
+                    auth.requestMatchers(h2ConsolePath + "/**").permitAll();
+                }
+                auth
+                    .requestMatchers("/api/v1/**").permitAll()
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                    .anyRequest().authenticated();
+            })
+            .csrf(csrf -> csrf.disable())
             .headers(headers -> headers
-                .frameOptions(frame -> frame.sameOrigin())          // H2 Console iframe
+                .frameOptions(frame -> frame.sameOrigin())
             )
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

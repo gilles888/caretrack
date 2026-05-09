@@ -46,14 +46,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Base de données Phase 2 : PostgreSQL (commenté) -->
-		<!--
+		<!-- Base de données Phase 2 : PostgreSQL -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		-->
 
 		<!-- JSON pour champs JSONB (Hibernate Types) -->
 		<dependency>

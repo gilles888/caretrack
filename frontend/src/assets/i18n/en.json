@@ -224,6 +224,7 @@
       },
       "confirmApply": {
         "header": "Bulk application",
+        "message": "Apply this plan to all patients with",
         "accept": "Apply",
         "reject": "Cancel"
       },
