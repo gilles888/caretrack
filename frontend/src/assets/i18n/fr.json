@@ -1,0 +1,358 @@
+{
+  "nav": {
+    "logout": "Déconnexion",
+    "lang": "Langue"
+  },
+  "login": {
+    "title": "Plateforme de suivi médical",
+    "subtitle": "Connectez-vous pour accéder à votre espace",
+    "email": "Adresse e-mail",
+    "emailPlaceholder": "vous@exemple.fr",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Se connecter",
+    "quickAccess": "Accès rapide dev",
+    "quickDoctors": "Médecins",
+    "quickPatients": "Patients",
+    "quickAdmin": "Administration",
+    "simulation": "Simulation — aucun appel backend en Phase 1",
+    "fillAll": "Veuillez remplir tous les champs.",
+    "quickLoginError": "Erreur lors de la connexion rapide.",
+    "quickLoginLabel": "Connexion rapide",
+    "errors": {
+      "invalidCredentials": "Identifiants invalides. Vérifiez vos informations.",
+      "serverError": "Erreur serveur"
+    }
+  },
+  "unauthorized": {
+    "title": "Accès non autorisé",
+    "message": "Vous n'avez pas les droits nécessaires pour accéder à cette page.",
+    "back": "Retour"
+  },
+  "patient": {
+    "space": "Mon espace santé",
+    "forms": "Formulaires à remplir",
+    "history": "Mon suivi — 7 derniers jours",
+    "recentSubmissions": "Mes soumissions récentes",
+    "allDone": "Tous vos formulaires sont à jour !",
+    "allDoneSub": "Revenez demain pour votre suivi.",
+    "viewHistory": "Voir mon historique",
+    "toFill": "à remplir",
+    "doctorAlerted": "Votre médecin a été alerté —",
+    "criticalAlerts": "alerte(s) critique(s)",
+    "globalScore": "Score global",
+    "score": "Score",
+    "questionnaires": {
+      "title": "Mon espace santé",
+      "forms": "Formulaires à remplir",
+      "history": "Mon suivi — 7 derniers jours",
+      "recentSubmissions": "Mes soumissions récentes",
+      "allDone": "Tous vos formulaires sont à jour !",
+      "allDoneSub": "Revenez demain pour votre suivi.",
+      "doctorAlerted": "Votre médecin a été alerté —",
+      "criticalAlerts": "alerte(s) critique(s)",
+      "toFill": "à remplir",
+      "score": "Score"
+    },
+    "wizard": {
+      "loading": "Chargement du questionnaire...",
+      "prev": "Précédent",
+      "next": "Suivant",
+      "send": "Envoyer",
+      "timer": "Minuterie"
+    },
+    "card": {
+      "questions": "questions",
+      "overdue": "En retard",
+      "inProgress": "En cours",
+      "continue": "Continuer",
+      "start": "Commencer",
+      "defaultName": "Questionnaire de suivi",
+      "freq": {
+        "QUOTIDIEN": "Quotidien",
+        "HEBDO": "Hebdomadaire",
+        "MENSUEL": "Mensuel",
+        "TRIMESTRIEL": "Trimestriel",
+        "PAR_CYCLE": "Par cycle"
+      }
+    },
+    "question": {
+      "placeholder": "Décrivez en quelques mots...",
+      "criticalAlert": "Votre médecin sera alerté immédiatement",
+      "warningAlert": "Cette réponse sera signalée à votre équipe soignante",
+      "yes": "Oui",
+      "no": "Non",
+      "likert4": {
+        "0": "Jamais",
+        "1": "Parfois",
+        "2": "Souvent",
+        "3": "Toujours"
+      },
+      "likert5": {
+        "0": "Pas du tout",
+        "1": "Un peu",
+        "2": "Modérément",
+        "3": "Beaucoup",
+        "4": "Énormément"
+      }
+    }
+  },
+  "wizard": {
+    "success": {
+      "title": "Questionnaire complété !",
+      "message": "Merci pour votre suivi. Vos réponses ont été enregistrées.",
+      "globalScore": "Score global",
+      "backToSpace": "Retour à mon espace",
+      "viewHistory": "Voir mon historique",
+      "teamNotified": "Votre équipe soignante a été informée de certaines de vos réponses."
+    }
+  },
+  "pro": {
+    "dashboard": {
+      "title": "Dashboard Formulaires",
+      "activePatients": "Patients actifs",
+      "pending": "En attente",
+      "criticalAlerts": "Alertes critiques",
+      "completion": "Complétion",
+      "refresh": "Actualiser",
+      "reset": "Réinitialiser",
+      "search": "Recherche",
+      "searchPlaceholder": "Patient, questionnaire...",
+      "disease": "Maladie",
+      "allDiseases": "Toutes",
+      "status": "Statut",
+      "allStatuses": "Tous statuts",
+      "period": "Période",
+      "allDates": "Toutes dates",
+      "thisMonth": "+3 ce mois",
+      "toReview": "à réviser",
+      "urgent": "Urgent",
+      "ras": "RAS",
+      "criticalAction": "alerte(s) critique(s) non traitée(s) — action requise",
+      "noDataFilters": "Aucune donnée correspondant aux filtres",
+      "noDetail": "Pas de détail disponible",
+      "viewFolder": "Voir le dossier",
+      "resend": "Relancer",
+      "details": "Détails",
+      "patient": "Patient",
+      "questionnaire": "Questionnaire",
+      "sent": "Envoyé",
+      "completed": "Complété",
+      "score": "Score",
+      "actions": "Actions",
+      "statut": {
+        "CRITICAL": "Critique",
+        "WARNING": "Attention",
+        "NORMAL": "Normal",
+        "EN_ATTENTE": "En attente"
+      }
+    },
+    "alerts": {
+      "title": "Alertes cliniques",
+      "acknowledgeAll": "Tout acquitter",
+      "acknowledge": "Acquitter cette alerte",
+      "acknowledged": "Acquittée",
+      "refresh": "Actualiser",
+      "criticalBanner": "alerte(s) CRITIQUE(S) — Intervention immédiate requise",
+      "criticals": "Critiques",
+      "warnings": "Avertissements",
+      "unacknowledged": "Non acquittées",
+      "noAlerts": "Aucune alerte active",
+      "noAlertsSub": "Tous les patients sont dans les paramètres normaux.",
+      "observedValue": "Valeur observée",
+      "callPatient": "Appeler le patient",
+      "scheduleConsult": "Planifier une consultation",
+      "critiquesSection": "Critiques",
+      "warningsSection": "Avertissements",
+      "actions": "Actions",
+      "criticalTag": "Critique",
+      "warningTag": "Attention"
+    },
+    "analytics": {
+      "title": "Analytics — Suivi longitudinal",
+      "exportPdf": "Exporter PDF",
+      "patientFilter": "Patient",
+      "allPatients": "Tous les patients",
+      "questionnaireFilter": "Questionnaire",
+      "all": "Tous",
+      "periodFilter": "Période",
+      "last8Weeks": "8 dernières semaines",
+      "refresh": "Actualiser",
+      "esasScore": "Score moyen ESAS-r",
+      "phq9Score": "PHQ-9 moyen cohorte",
+      "completionRate": "Taux de complétion",
+      "tabEvolution": "Évolution patient",
+      "tabCohort": "Vue cohorte",
+      "tabAdherence": "Adhérence",
+      "tabAlerts": "Tendance alertes",
+      "selectPatientAndTemplate": "Sélectionnez un patient et un questionnaire pour voir l'évolution"
+    },
+    "builder": {
+      "title": "Éditeur de plan de suivi",
+      "unsaved": "Modifications non sauvegardées",
+      "save": "Sauvegarder",
+      "savePlan": "Sauvegarder le plan",
+      "reset": "Réinitialiser",
+      "applyAll": "Appliquer à tous les patients (même maladie)",
+      "entityLabel": "Patient ou protocole",
+      "entityPlaceholder": "Sélectionner...",
+      "library": "Bibliothèque",
+      "questionnaires": "questionnaires",
+      "filterPlaceholder": "Filtrer les questionnaires...",
+      "noMatch": "Aucun questionnaire correspondant",
+      "plan": "Plan de suivi",
+      "selectEntity": "Sélectionnez un patient ou protocole",
+      "dropHere": "Glisser un questionnaire ici",
+      "totalLoad": "Charge totale estimée",
+      "addToPlan": "Ajouter au plan",
+      "remove": "Retirer",
+      "moveItem": "Déplacer cet élément",
+      "back": "Retour au dashboard",
+      "freq": "Fréquence",
+      "reminder": "Rappel",
+      "reminderOn": "Activé",
+      "reminderOff": "Désactivé",
+      "reminderTime": "Heure de rappel",
+      "authRequired": "Autorisation requise",
+      "free": "Libre",
+      "auth": "Auth.",
+      "confirmReset": {
+        "message": "Réinitialiser le plan ? Toutes les modifications seront perdues.",
+        "header": "Confirmation",
+        "accept": "Réinitialiser",
+        "reject": "Annuler"
+      },
+      "confirmApply": {
+        "header": "Application en masse",
+        "accept": "Appliquer",
+        "reject": "Annuler"
+      },
+      "confirmBack": {
+        "message": "Des modifications non sauvegardées seront perdues. Quitter quand même ?",
+        "header": "Modifications non sauvegardées",
+        "accept": "Quitter",
+        "reject": "Rester"
+      },
+      "freq": {
+        "QUOTIDIEN": "Quotidien",
+        "HEBDO": "Hebdomadaire",
+        "MENSUEL": "Mensuel",
+        "TRIMESTRIEL": "Trimestriel",
+        "PAR_CYCLE": "Par cycle"
+      }
+    },
+    "patientDetail": {
+      "tabScores": "Scores",
+      "tabHistory": "Historique",
+      "tabPlan": "Plan de suivi",
+      "criticalAlert": "Alerte critique — intervention recommandée",
+      "noData": "Aucune réponse disponible",
+      "noHistory": "Aucun historique",
+      "noPlan": "Aucun plan de suivi configuré",
+      "editPlan": "Modifier le plan",
+      "acknowledgeAlerts": "Acquitter les alertes",
+      "annotation": "Annotation",
+      "saveAnnotation": "Enregistrer l'annotation",
+      "annotationPlaceholder": "Annotation médicale...",
+      "close": "Fermer",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "alerteLabel": {
+        "CRITICAL": "Critique",
+        "WARNING": "Attention",
+        "INFO": "Info"
+      }
+    },
+    "review": {
+      "title": "Révision de réponse",
+      "back": "Retour",
+      "alertsDetected": "alerte(s) détectée(s) sur cette réponse",
+      "annotationHeader": "Annotation médicale",
+      "annotationPlaceholder": "Saisir une observation ou recommandation clinique...",
+      "acknowledgeAll": "Acquitter toutes les alertes",
+      "validate": "Valider la révision",
+      "criticalTag": "Critique",
+      "warningTag": "Attention",
+      "yes": "Oui",
+      "no": "Non"
+    }
+  },
+  "analytics": {
+    "dashboard": {
+      "title": "Analytics — Suivi longitudinal",
+      "exportPdf": "Exporter PDF",
+      "patientFilter": "Patient",
+      "allPatients": "Tous les patients",
+      "questionnaireFilter": "Questionnaire",
+      "allQuestionnaires": "Tous",
+      "periodFilter": "Période",
+      "last8Weeks": "8 dernières semaines",
+      "refresh": "Actualiser",
+      "esasScore": "Score moyen ESAS-r",
+      "phq9Score": "PHQ-9 moyen cohorte",
+      "completionRate": "Taux de complétion",
+      "tabEvolution": "Évolution patient",
+      "tabCohort": "Vue cohorte",
+      "tabAdherence": "Adhérence",
+      "tabAlerts": "Tendance alertes",
+      "selectPatientAndTemplate": "Sélectionnez un patient et un questionnaire pour voir l'évolution"
+    },
+    "evolution": {
+      "title": "Évolution longitudinale",
+      "noData": "Aucune donnée sur la période",
+      "alertDetected": "Des passages en zone d'alerte ont été détectés (zones rouges sur le graphique)",
+      "globalScore": "Score global",
+      "criticalThreshold": "Seuil critique",
+      "warningThreshold": "Seuil alerte",
+      "csv": "CSV",
+      "pdf": "PDF"
+    },
+    "adherence": {
+      "title": "Taux d'adhérence par questionnaire",
+      "noData": "Aucune donnée d'adhérence",
+      "global": "Global",
+      "target": "Objectif 85%"
+    },
+    "alertsTrend": {
+      "title": "Tendance des alertes — alertes/semaine",
+      "noData": "Aucune donnée de tendance",
+      "warningAlerts": "Alertes WARNING",
+      "criticalAlerts": "Alertes CRITICAL",
+      "completionRate": "Taux complétion (%)",
+      "alerts": "Alertes",
+      "completion": "Complétion"
+    },
+    "heatmap": {
+      "title": "Vue cohorte",
+      "patients": "patients",
+      "noData": "Aucune donnée cohorte",
+      "score": "Score :",
+      "noDataCell": "Pas de données",
+      "legend": {
+        "low": "0-3 (faible)",
+        "moderate": "4-6 (modéré)",
+        "high": "7-10 (élevé)"
+      }
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "yes": "Oui",
+    "no": "Non",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "export": "Exporter",
+    "noData": "Aucune donnée disponible",
+    "appName": "CareTrack",
+    "back": "Retour",
+    "refresh": "Actualiser",
+    "save": "Enregistrer"
+  }
+}

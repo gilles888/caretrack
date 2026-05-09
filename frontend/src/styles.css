@@ -1,0 +1,21 @@
+@import 'tailwindcss';
+@import 'primeicons/primeicons.css';
+
+@source "./src/app/**/*.ts";
+
+@theme {
+  --color-caretrack-blue: #1565C0;
+  --color-caretrack-teal: #00796B;
+  --color-caretrack-navy: #0D1B2A;
+  --color-caretrack-light: #E3F2FD;
+}
+
+/* Wizard full-screen mobile */
+.wizard-container {
+  min-height: 100dvh;
+}
+
+/* PrimeNG overrides */
+.p-progressbar {
+  border-radius: 9999px;
+}

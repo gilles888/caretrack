@@ -1,0 +1,57 @@
+spring:
+  profiles:
+    active: dev   # dev=H2, prod=postgres
+
+  datasource:
+    url: jdbc:h2:mem:caretrackdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL;NON_KEYWORDS=VALUE
+    driver-class-name: org.h2.Driver
+    username: caretrack
+    password: caretrack
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        default_batch_fetch_size: 25
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+  flyway:
+    enabled: false   # désactivé Phase 1 — activer en Phase 2
+
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.caretrack: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+
+caretrack:
+  app-url: ${APP_URL:http://localhost:4200}
+  notifications:
+    email-enabled: ${EMAIL_ENABLED:true}
+    digest-delay-minutes: ${DIGEST_DELAY_MINUTES:60}
+    from-address: ${MAIL_FROM:noreply@caretrack.fr}
+  alertes:
+    retard-jours-warning: ${RETARD_WARNING_JOURS:2}
+    retard-jours-critical: ${RETARD_CRITICAL_JOURS:5}
+
+anthropic:
+  api-key: ${ANTHROPIC_API_KEY:}

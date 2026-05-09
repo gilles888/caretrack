@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Rappel questionnaire CareTrack</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f7fa; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header { background-color: #1976d2; color: white; padding: 32px 40px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+        .header p { margin: 8px 0 0; opacity: 0.85; font-size: 14px; }
+        .content { padding: 32px 40px; }
+        .content p { color: #374151; line-height: 1.7; font-size: 15px; }
+        .info-box { background: #eff6ff; border-left: 4px solid #1976d2; border-radius: 4px; padding: 16px 20px; margin: 20px 0; }
+        .info-box p { margin: 4px 0; color: #1e3a5f; font-size: 14px; }
+        .info-box strong { color: #1976d2; }
+        .cta-center { text-align: center; margin: 32px 0; }
+        .btn-cta { display: inline-block; background-color: #1976d2; color: #ffffff !important; text-decoration: none; padding: 14px 36px; border-radius: 6px; font-size: 16px; font-weight: 600; letter-spacing: 0.3px; }
+        .btn-cta:hover { background-color: #1565c0; }
+        .footer { background-color: #f9fafb; border-top: 1px solid #e5e7eb; padding: 20px 40px; text-align: center; }
+        .footer p { color: #9ca3af; font-size: 12px; margin: 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>CareTrack</h1>
+        <p>Suivi médical personnalisé</p>
+    </div>
+    <div class="content">
+        <p>Bonjour <strong th:text="${patient.prenom + ' ' + patient.nom}">Prénom Nom</strong>,</p>
+        <p>Votre équipe soignante vous invite à compléter votre questionnaire de suivi :</p>
+
+        <div class="info-box">
+            <p><strong>Questionnaire :</strong> <span th:text="${template.nom}">Nom du questionnaire</span></p>
+            <p th:if="${template.dureeEstimeeMinutes != null}">
+                <strong>Durée estimée :</strong>
+                <span th:text="${template.dureeEstimeeMinutes + ' minutes'}">5 minutes</span>
+            </p>
+        </div>
+
+        <p>Ce questionnaire nous aide à surveiller votre état de santé et à adapter votre traitement si nécessaire. Vos réponses sont confidentielles et transmises directement à votre médecin.</p>
+
+        <div class="cta-center">
+            <a th:href="${appUrl + '/patient/questionnaires'}" class="btn-cta">Compléter maintenant</a>
+        </div>
+
+        <p style="font-size:13px; color:#6b7280;">Si vous avez déjà complété ce questionnaire récemment, vous pouvez ignorer ce message.</p>
+    </div>
+    <div class="footer">
+        <p>CareTrack — Application médicale de suivi des patients chroniques<br/>
+           Ce message est automatique, merci de ne pas y répondre.</p>
+    </div>
+</div>
+</body>
+</html>

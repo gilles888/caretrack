@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Alerte clinique CareTrack</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f7fa; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header-critical { background-color: #dc2626; color: white; padding: 28px 40px; }
+        .header-warning  { background-color: #d97706; color: white; padding: 28px 40px; }
+        .header-info     { background-color: #2563eb; color: white; padding: 28px 40px; }
+        .header-critical h1, .header-warning h1, .header-info h1 { margin: 0 0 6px; font-size: 22px; }
+        .badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
+        .badge-critical { background: rgba(255,255,255,0.25); color: white; }
+        .badge-warning  { background: rgba(255,255,255,0.25); color: white; }
+        .badge-info     { background: rgba(255,255,255,0.25); color: white; }
+        .content { padding: 32px 40px; }
+        .content p { color: #374151; line-height: 1.7; font-size: 15px; }
+        .detail-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .detail-table td { padding: 10px 12px; font-size: 14px; color: #374151; border-bottom: 1px solid #f3f4f6; }
+        .detail-table td:first-child { font-weight: 600; color: #111827; width: 45%; background: #f9fafb; }
+        .alert-message { background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 16px 20px; margin: 20px 0; }
+        .alert-message-warning { background: #fffbeb; border-color: #fde68a; }
+        .alert-message p { margin: 0; font-size: 14px; color: #7f1d1d; font-style: italic; }
+        .alert-message-warning p { color: #78350f; }
+        .cta-center { text-align: center; margin: 28px 0; }
+        .btn-cta { display: inline-block; background-color: #111827; color: #ffffff !important; text-decoration: none; padding: 12px 30px; border-radius: 6px; font-size: 14px; font-weight: 600; }
+        .footer { background-color: #f9fafb; border-top: 1px solid #e5e7eb; padding: 20px 40px; text-align: center; }
+        .footer p { color: #9ca3af; font-size: 12px; margin: 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header dynamique selon niveau -->
+    <div th:class="${isCritical} ? 'header-critical' : 'header-warning'">
+        <span th:class="${isCritical} ? 'badge badge-critical' : 'badge badge-warning'"
+              th:text="${niveauLabel}">CRITICAL</span>
+        <h1 th:if="${isCritical}">Alerte clinique critique</h1>
+        <h1 th:unless="${isCritical}">Alerte clinique</h1>
+    </div>
+
+    <div class="content">
+        <p>Une alerte clinique a été déclenchée pour l'un de vos patients :</p>
+
+        <table class="detail-table">
+            <tr>
+                <td>Patient</td>
+                <td th:text="${patient.prenom + ' ' + patient.nom}">Jean Dupont</td>
+            </tr>
+            <tr>
+                <td>Item observé</td>
+                <td th:text="${alerte.itemCode ?: 'N/A'}">Douleur</td>
+            </tr>
+            <tr>
+                <td>Valeur observée</td>
+                <td th:text="${alerte.valeurObservee}">8.0</td>
+            </tr>
+            <tr>
+                <td>Seuil déclenché</td>
+                <td th:text="${alerte.seuilDeclenche}">7.0</td>
+            </tr>
+            <tr>
+                <td>Date / heure</td>
+                <td th:text="${#temporals.format(alerte.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2026 08:30</td>
+            </tr>
+        </table>
+
+        <div th:class="${isCritical} ? 'alert-message' : 'alert-message alert-message-warning'">
+            <p th:text="${alerte.message}">Détail de l'alerte</p>
+        </div>
+
+        <div class="cta-center">
+            <a th:href="${appUrl + '/medecin/patients/' + patient.id}" class="btn-cta">
+                Voir le dossier patient
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>CareTrack — Alerte générée automatiquement<br/>
+           Acquittez cette alerte depuis l'interface médicale après prise en charge.</p>
+    </div>
+</div>
+</body>
+</html>

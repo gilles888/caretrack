@@ -1,0 +1,357 @@
+{
+  "nav": {
+    "logout": "Afmelden",
+    "lang": "Taal"
+  },
+  "login": {
+    "title": "Medisch opvolgingsplatform",
+    "subtitle": "Meld u aan om toegang te krijgen tot uw ruimte",
+    "email": "E-mailadres",
+    "emailPlaceholder": "u@voorbeeld.be",
+    "password": "Wachtwoord",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Aanmelden",
+    "quickAccess": "Snelle dev-toegang",
+    "quickDoctors": "Artsen",
+    "quickPatients": "Patiënten",
+    "quickAdmin": "Beheer",
+    "simulation": "Simulatie — geen backend-aanroepen in Fase 1",
+    "fillAll": "Vul alle velden in.",
+    "quickLoginError": "Fout bij snel aanmelden.",
+    "quickLoginLabel": "Snel aanmelden",
+    "errors": {
+      "invalidCredentials": "Ongeldige inloggegevens. Controleer uw informatie.",
+      "serverError": "Serverfout"
+    }
+  },
+  "unauthorized": {
+    "title": "Ongeoorloofde toegang",
+    "message": "U heeft niet de nodige rechten om deze pagina te bekijken.",
+    "back": "Terug"
+  },
+  "patient": {
+    "space": "Mijn gezondheidsruimte",
+    "forms": "In te vullen formulieren",
+    "history": "Mijn opvolging — laatste 7 dagen",
+    "recentSubmissions": "Mijn recente inzendingen",
+    "allDone": "Al uw formulieren zijn up-to-date!",
+    "allDoneSub": "Kom morgen terug voor uw opvolging.",
+    "viewHistory": "Mijn geschiedenis bekijken",
+    "toFill": "in te vullen",
+    "doctorAlerted": "Uw arts is gewaarschuwd —",
+    "criticalAlerts": "kritieke melding(en)",
+    "globalScore": "Globale score",
+    "score": "Score",
+    "questionnaires": {
+      "title": "Mijn gezondheidsruimte",
+      "forms": "In te vullen formulieren",
+      "history": "Mijn opvolging — laatste 7 dagen",
+      "recentSubmissions": "Mijn recente inzendingen",
+      "allDone": "Al uw formulieren zijn up-to-date!",
+      "allDoneSub": "Kom morgen terug voor uw opvolging.",
+      "doctorAlerted": "Uw arts is gewaarschuwd —",
+      "criticalAlerts": "kritieke melding(en)",
+      "toFill": "in te vullen",
+      "score": "Score"
+    },
+    "wizard": {
+      "loading": "Vragenlijst laden...",
+      "prev": "Vorige",
+      "next": "Volgende",
+      "send": "Verzenden",
+      "timer": "Timer"
+    },
+    "card": {
+      "questions": "vragen",
+      "overdue": "Te laat",
+      "inProgress": "Bezig",
+      "continue": "Doorgaan",
+      "start": "Starten",
+      "defaultName": "Opvolgingsvragenlijst",
+      "freq": {
+        "QUOTIDIEN": "Dagelijks",
+        "HEBDO": "Wekelijks",
+        "MENSUEL": "Maandelijks",
+        "TRIMESTRIEL": "Driemaandelijks",
+        "PAR_CYCLE": "Per cyclus"
+      }
+    },
+    "question": {
+      "placeholder": "Beschrijf in een paar woorden...",
+      "criticalAlert": "Uw arts wordt onmiddellijk gewaarschuwd",
+      "warningAlert": "Dit antwoord wordt gemeld aan uw zorgteam",
+      "yes": "Ja",
+      "no": "Nee",
+      "likert4": {
+        "0": "Nooit",
+        "1": "Soms",
+        "2": "Vaak",
+        "3": "Altijd"
+      },
+      "likert5": {
+        "0": "Helemaal niet",
+        "1": "Een beetje",
+        "2": "Matig",
+        "3": "Veel",
+        "4": "Enorm"
+      }
+    }
+  },
+  "wizard": {
+    "success": {
+      "title": "Vragenlijst voltooid!",
+      "message": "Bedankt voor uw opvolging. Uw antwoorden zijn opgeslagen.",
+      "globalScore": "Globale score",
+      "backToSpace": "Terug naar mijn ruimte",
+      "viewHistory": "Mijn geschiedenis bekijken",
+      "teamNotified": "Uw zorgteam is op de hoogte gebracht van sommige van uw antwoorden."
+    }
+  },
+  "pro": {
+    "dashboard": {
+      "title": "Formulieren Dashboard",
+      "activePatients": "Actieve patiënten",
+      "pending": "In behandeling",
+      "criticalAlerts": "Kritieke meldingen",
+      "completion": "Voltooiing",
+      "refresh": "Vernieuwen",
+      "reset": "Resetten",
+      "search": "Zoeken",
+      "searchPlaceholder": "Patiënt, vragenlijst...",
+      "disease": "Ziekte",
+      "allDiseases": "Alle",
+      "status": "Status",
+      "allStatuses": "Alle statussen",
+      "period": "Periode",
+      "allDates": "Alle datums",
+      "thisMonth": "+3 deze maand",
+      "toReview": "te beoordelen",
+      "urgent": "Urgent",
+      "ras": "Geen bijzonderheden",
+      "criticalAction": "kritieke melding(en) onopgelost — actie vereist",
+      "noDataFilters": "Geen gegevens die overeenkomen met de filters",
+      "noDetail": "Geen details beschikbaar",
+      "viewFolder": "Dossier bekijken",
+      "resend": "Opnieuw versturen",
+      "details": "Details",
+      "patient": "Patiënt",
+      "questionnaire": "Vragenlijst",
+      "sent": "Verzonden",
+      "completed": "Voltooid",
+      "score": "Score",
+      "actions": "Acties",
+      "statut": {
+        "CRITICAL": "Kritiek",
+        "WARNING": "Waarschuwing",
+        "NORMAL": "Normaal",
+        "EN_ATTENTE": "In behandeling"
+      }
+    },
+    "alerts": {
+      "title": "Klinische meldingen",
+      "acknowledgeAll": "Alles bevestigen",
+      "acknowledge": "Deze melding bevestigen",
+      "acknowledged": "Bevestigd",
+      "refresh": "Vernieuwen",
+      "criticalBanner": "KRITIEKE melding(en) — Onmiddellijke interventie vereist",
+      "criticals": "Kritiek",
+      "warnings": "Waarschuwingen",
+      "unacknowledged": "Niet bevestigd",
+      "noAlerts": "Geen actieve meldingen",
+      "noAlertsSub": "Alle patiënten bevinden zich binnen de normale parameters.",
+      "observedValue": "Waargenomen waarde",
+      "callPatient": "Patiënt bellen",
+      "scheduleConsult": "Een consultatie plannen",
+      "critiquesSection": "Kritiek",
+      "warningsSection": "Waarschuwingen",
+      "actions": "Acties",
+      "criticalTag": "Kritiek",
+      "warningTag": "Waarschuwing"
+    },
+    "analytics": {
+      "title": "Analytics — Longitudinale opvolging",
+      "exportPdf": "PDF exporteren",
+      "patientFilter": "Patiënt",
+      "allPatients": "Alle patiënten",
+      "questionnaireFilter": "Vragenlijst",
+      "all": "Alle",
+      "periodFilter": "Periode",
+      "last8Weeks": "Laatste 8 weken",
+      "refresh": "Vernieuwen",
+      "esasScore": "Gemiddelde ESAS-r score",
+      "phq9Score": "Gemiddelde PHQ-9 cohort",
+      "completionRate": "Voltooiingspercentage",
+      "tabEvolution": "Patiëntevolutie",
+      "tabCohort": "Cohortoverzicht",
+      "tabAdherence": "Therapietrouw",
+      "tabAlerts": "Meldingstrend",
+      "selectPatientAndTemplate": "Selecteer een patiënt en een vragenlijst om de evolutie te bekijken"
+    },
+    "builder": {
+      "title": "Editor opvolgingsplan",
+      "unsaved": "Niet-opgeslagen wijzigingen",
+      "save": "Opslaan",
+      "savePlan": "Plan opslaan",
+      "reset": "Resetten",
+      "applyAll": "Toepassen op alle patiënten (zelfde ziekte)",
+      "entityLabel": "Patiënt of protocol",
+      "entityPlaceholder": "Selecteren...",
+      "library": "Bibliotheek",
+      "questionnaires": "vragenlijsten",
+      "filterPlaceholder": "Vragenlijsten filteren...",
+      "noMatch": "Geen overeenkomende vragenlijst",
+      "plan": "Opvolgingsplan",
+      "selectEntity": "Selecteer een patiënt of protocol",
+      "dropHere": "Sleep een vragenlijst hier",
+      "totalLoad": "Geschatte totale belasting",
+      "addToPlan": "Aan plan toevoegen",
+      "remove": "Verwijderen",
+      "moveItem": "Dit item verplaatsen",
+      "back": "Terug naar dashboard",
+      "freq": "Frequentie",
+      "reminder": "Herinnering",
+      "reminderOn": "Ingeschakeld",
+      "reminderOff": "Uitgeschakeld",
+      "reminderTime": "Herinneringstijd",
+      "authRequired": "Toestemming vereist",
+      "free": "Vrij",
+      "auth": "Auth.",
+      "confirmReset": {
+        "message": "Plan resetten? Alle wijzigingen gaan verloren.",
+        "header": "Bevestiging",
+        "accept": "Resetten",
+        "reject": "Annuleren"
+      },
+      "confirmApply": {
+        "header": "Massale toepassing",
+        "accept": "Toepassen",
+        "reject": "Annuleren"
+      },
+      "confirmBack": {
+        "message": "Niet-opgeslagen wijzigingen gaan verloren. Toch verlaten?",
+        "header": "Niet-opgeslagen wijzigingen",
+        "accept": "Verlaten",
+        "reject": "Blijven"
+      },
+      "freq": {
+        "QUOTIDIEN": "Dagelijks",
+        "HEBDO": "Wekelijks",
+        "MENSUEL": "Maandelijks",
+        "TRIMESTRIEL": "Driemaandelijks",
+        "PAR_CYCLE": "Per cyclus"
+      }
+    },
+    "patientDetail": {
+      "tabScores": "Scores",
+      "tabHistory": "Geschiedenis",
+      "tabPlan": "Opvolgingsplan",
+      "criticalAlert": "Kritieke melding — interventie aanbevolen",
+      "noData": "Geen antwoord beschikbaar",
+      "noHistory": "Geen geschiedenis",
+      "noPlan": "Geen opvolgingsplan geconfigureerd",
+      "editPlan": "Plan bewerken",
+      "acknowledgeAlerts": "Meldingen bevestigen",
+      "annotation": "Annotatie",
+      "saveAnnotation": "Annotatie opslaan",
+      "annotationPlaceholder": "Medische annotatie...",
+      "close": "Sluiten",
+      "active": "Actief",
+      "inactive": "Inactief",
+      "alerteLabel": {
+        "CRITICAL": "Kritiek",
+        "WARNING": "Waarschuwing",
+        "INFO": "Info"
+      }
+    },
+    "review": {
+      "title": "Antwoordbeoordeling",
+      "back": "Terug",
+      "alertsDetected": "melding(en) gedetecteerd op dit antwoord",
+      "annotationHeader": "Medische annotatie",
+      "annotationPlaceholder": "Voer een klinische observatie of aanbeveling in...",
+      "acknowledgeAll": "Alle meldingen bevestigen",
+      "validate": "Beoordeling valideren",
+      "criticalTag": "Kritiek",
+      "warningTag": "Waarschuwing",
+      "yes": "Ja",
+      "no": "Nee"
+    }
+  },
+  "analytics": {
+    "dashboard": {
+      "title": "Analytics — Longitudinale opvolging",
+      "exportPdf": "PDF exporteren",
+      "patientFilter": "Patiënt",
+      "allPatients": "Alle patiënten",
+      "questionnaireFilter": "Vragenlijst",
+      "allQuestionnaires": "Alle",
+      "periodFilter": "Periode",
+      "last8Weeks": "Laatste 8 weken",
+      "refresh": "Vernieuwen",
+      "esasScore": "Gemiddelde ESAS-r score",
+      "phq9Score": "Gemiddelde PHQ-9 cohort",
+      "completionRate": "Voltooiingspercentage",
+      "tabEvolution": "Patiëntevolutie",
+      "tabCohort": "Cohortoverzicht",
+      "tabAdherence": "Therapietrouw",
+      "tabAlerts": "Meldingstrend",
+      "selectPatientAndTemplate": "Selecteer een patiënt en een vragenlijst om de evolutie te bekijken"
+    },
+    "evolution": {
+      "title": "Longitudinale evolutie",
+      "noData": "Geen gegevens voor de periode",
+      "alertDetected": "Passages in alertzone gedetecteerd (rode zones op de grafiek)",
+      "globalScore": "Globale score",
+      "criticalThreshold": "Kritieke drempel",
+      "warningThreshold": "Waarschuwingsdrempel",
+      "csv": "CSV",
+      "pdf": "PDF"
+    },
+    "adherence": {
+      "title": "Nalevingspercentage per vragenlijst",
+      "noData": "Geen nalevingsgegevens",
+      "global": "Globaal",
+      "target": "Doel 85%"
+    },
+    "alertsTrend": {
+      "title": "Meldingstrend — meldingen/week",
+      "noData": "Geen trendgegevens",
+      "warningAlerts": "WAARSCHUWING Meldingen",
+      "criticalAlerts": "KRITIEKE Meldingen",
+      "completionRate": "Voltooiingspercentage (%)",
+      "alerts": "Meldingen",
+      "completion": "Voltooiing"
+    },
+    "heatmap": {
+      "title": "Cohortoverzicht",
+      "patients": "patiënten",
+      "noData": "Geen cohortgegevens",
+      "score": "Score:",
+      "noDataCell": "Geen gegevens",
+      "legend": {
+        "low": "0-3 (laag)",
+        "moderate": "4-6 (matig)",
+        "high": "7-10 (hoog)"
+      }
+    }
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Er is een fout opgetreden",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "confirm": "Bevestigen",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Sluiten",
+    "yes": "Ja",
+    "no": "Nee",
+    "search": "Zoeken",
+    "filter": "Filteren",
+    "export": "Exporteren",
+    "noData": "Geen gegevens beschikbaar",
+    "appName": "CareTrack",
+    "back": "Terug",
+    "refresh": "Vernieuwen"
+  }
+}
