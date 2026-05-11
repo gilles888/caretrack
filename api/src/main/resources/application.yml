@@ -55,3 +55,10 @@ caretrack:
 
 anthropic:
   api-key: ${ANTHROPIC_API_KEY:}
+
+app:
+  security:
+    jwt:
+      # Secret 256 bits minimum (32 caractères) — override en production via variable d'environnement
+      secret: ${JWT_SECRET:caretrack-dev-secret-key-phase2-jwt-32chars}
+      expiration: ${JWT_EXPIRATION:86400}   # 24 heures en secondes

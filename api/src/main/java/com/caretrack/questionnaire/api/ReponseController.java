@@ -37,6 +37,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -199,10 +202,11 @@ public class ReponseController {
                     "Réponse introuvable pour ce patient");
         }
 
-        // Phase 1 : UUID aléatoire pour reviewedBy (Phase 2 : extraire du token JWT)
+        // Phase 2 : extraire l'UUID du médecin depuis le token JWT (SecurityContextHolder)
+        UUID reviewerUuid = extractCurrentUserId();
         reponse.setNotesMedecin(reviewRequest.notesMedecin());
         reponse.setReviewedAt(LocalDateTime.now());
-        reponse.setReviewedBy(UUID.randomUUID());
+        reponse.setReviewedBy(reviewerUuid);
 
         ReponseQuestionnaire saved = reponseRepo.save(reponse);
         log.info("Revue médicale enregistrée : reponseId={}", reponseId);
@@ -225,6 +229,21 @@ public class ReponseController {
     // ─────────────────────────────────────────────────────────────────────────
     // Utilitaire
     // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Extrait l'UUID de l'utilisateur courant depuis le {@link SecurityContextHolder}.
+     * Retourne un UUID aléatoire en fallback si aucune authentification n'est disponible
+     * (ex : appels sans JWT en environnement de test).
+     */
+    private UUID extractCurrentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof UUID userId) {
+            return userId;
+        }
+        // Fallback de sécurité (ne devrait pas arriver en production avec JWT actif)
+        log.warn("Aucune authentification JWT trouvée pour reviewedBy — UUID aléatoire utilisé");
+        return UUID.randomUUID();
+    }
 
     private String buildMessage(List<AlerteQuestionnaire> alertes) {
         if (alertes.isEmpty()) {

@@ -58,24 +58,43 @@ caretrack/
 - **PatientQuestionnairePlan** : plan d'envoi (fréquence, dates)
 - **ReponseQuestionnaire** : réponses soumises par un patient
 - **AlerteQuestionnaire** : alerte générée selon `AlerteNiveau` (WARNING, CRITICAL)
+- **UserAccount** : compte utilisateur JWT — `id (UUID)`, `email UNIQUE`, `passwordHash (BCrypt)`, `roles (CSV)`, `patientId (nullable)`, `medecinId (nullable)`, `actif`
 
 ### Rôles utilisateurs
 `PATIENT` · `MEDECIN` · `INFIRMIER` · `ADMIN` · `ADMIN_SUPPORT`
 
 ## API REST — endpoints principaux
 
-| Méthode | Route | Controller |
-|---|---|---|
-| GET/POST | `/api/v1/questionnaires` | `QuestionnaireTemplateController` |
-| GET/POST | `/api/v1/patients/{id}/questionnaires` | `PatientQuestionnaireController` |
-| POST | `/api/v1/patients/{id}/reponses` | `ReponseController` |
-| GET | `/api/v1/alertes` | `AlerteController` |
-| GET | `/api/v1/analytics` | `AnalyticsController` |
-| GET | `/api/v1/pro` | `ProDashboardController` |
-| GET | `/swagger-ui/` | Swagger UI (SpringDoc 2.3.0) |
+| Méthode | Route | Controller | Auth |
+|---|---|---|---|
+| POST | `/api/v1/auth/login` | `AuthController` | Public |
+| GET/POST | `/api/v1/questionnaires` | `QuestionnaireTemplateController` | Tous rôles |
+| GET/POST | `/api/v1/patients/{id}/questionnaires` | `PatientQuestionnaireController` | MEDECIN, INFIRMIER, ADMIN, PATIENT |
+| POST | `/api/v1/patients/{id}/reponses` | `ReponseController` | MEDECIN, INFIRMIER, ADMIN, PATIENT |
+| GET | `/api/v1/alertes` | `AlerteController` | MEDECIN, INFIRMIER, ADMIN |
+| GET | `/api/v1/analytics` | `AnalyticsController` | MEDECIN, INFIRMIER, ADMIN |
+| GET | `/api/v1/pro` | `ProDashboardController` | MEDECIN, INFIRMIER, ADMIN, ADMIN_SUPPORT |
+| GET | `/swagger-ui/` | Swagger UI (SpringDoc 2.3.0) | Public |
 
-**Phase 1 :** tous les endpoints sont ouverts (pas d'authentification).
-**Phase 2 :** JWT + `@PreAuthorize` par rôle (annotations déjà en place).
+**Phase 2 (actuelle) :** JWT Bearer token requis sur tous les endpoints sauf `/api/v1/auth/**` et Swagger.
+
+### Login JWT
+```bash
+# Obtenir un token
+curl -X POST https://caretrack.gilmotech.be/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@caretrack.be","password":"Admin123!"}'
+# Réponse : {"token":"...", "userId":"...", "roles":["ADMIN"], "email":"admin@caretrack.be"}
+
+# Utiliser le token
+curl -H "Authorization: Bearer <token>" https://caretrack.gilmotech.be/api/v1/alertes
+```
+
+### Comptes de test (créés par UserAccountDataInitializer)
+| Email | Mot de passe | Rôle |
+|---|---|---|
+| `admin@caretrack.be` | `Admin123!` | ADMIN |
+| `medecin@caretrack.be` | `Medecin123!` | MEDECIN |
 
 ## Frontend — routes Angular
 
@@ -138,6 +157,7 @@ CARETRACK_DB_PASSWORD="..." ./deploy.sh backend
 
 Variables d'environnement requises au déploiement :
 - `CARETRACK_DB_PASSWORD` — mot de passe PostgreSQL (obligatoire)
+- `JWT_SECRET` — secret HMAC-SHA pour les tokens JWT (256 bits minimum, **obligatoire en prod**)
 - `ANTHROPIC_API_KEY` — clé API Anthropic (orchestrateur IA)
 - `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` — config mail (optionnel, défaut : localhost)
 
@@ -159,7 +179,8 @@ Variables d'environnement requises au déploiement :
 ## Phases de développement
 
 - **Phase 1** : base H2 en mémoire, pas d'auth JWT, Flyway désactivé, mocks frontend disponibles
-- **Phase 2 (actuelle)** : PostgreSQL activé en production, auth JWT à implémenter, Flyway à activer, emails réels à configurer
+- **Phase 2 (actuelle)** : PostgreSQL activé, JWT + RBAC implémenté (entité UserAccount, JwtService, JwtAuthenticationFilter, AuthController), Flyway actif (V1 + V2 + V3), emails à configurer
+  - Frontend : pas encore mis à jour pour envoyer les tokens JWT (intercepteur à ajouter)
 
 ## Conventions importantes
 

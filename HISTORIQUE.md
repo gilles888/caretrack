@@ -9,6 +9,25 @@ Application médicale de suivi de patients chroniques.
 
 ## Chronologie
 
+### 2026-05-11 — Sécurité Phase 2 : JWT stateless + RBAC
+
+Implémentation complète de la sécurité JWT + RBAC (étapes 5.1–5.8) :
+
+- **Entité `UserAccount`** : table `user_accounts` avec UUID, email unique, BCrypt password hash, rôles CSV, FK patient optionnelle. Implémente `UserDetails`.
+- **`UserAccountRepository`** : `findByEmail`, `existsByEmail`.
+- **`JwtService`** : génération/validation de tokens JWT signés HMAC-SHA (jjwt 0.12.6), claims `sub` (userId), `email`, `roles`. Implémente `UserDetailsService`.
+- **`JwtAuthenticationFilter`** : `OncePerRequestFilter` — extrait le Bearer token, valide, peuple `SecurityContextHolder` avec le userId (UUID) comme principal.
+- **`AuthController`** : `POST /api/v1/auth/login` → token JWT + userId + rôles + email.
+- **`SecurityConfig`** : routes protégées par rôle, filtre JWT injecté, `BCryptPasswordEncoder` bean.
+- **`ReponseController`** : `reviewedBy` extrait du token JWT (plus de `UUID.randomUUID()`).
+- **Flyway V3** : migration `V3__user_accounts.sql` — table et index créés.
+- **`UserAccountDataInitializer`** : comptes admin et médecin créés au démarrage si absents.
+- **Variables d'environnement** : `JWT_SECRET` (obligatoire en prod), `JWT_EXPIRATION` (défaut 86400s).
+
+Build Maven : SUCCESS.
+
+---
+
 ### 2026-05-09 — Initialisation du projet et configuration déploiement
 - Clonage du dépôt : `git@github.com:gilles888/caretrack.git` → `/home/claude-worker/caretrack/`
 - Analyse de la structure : backend Spring Boot (Phase 1 / H2), frontend Angular 20
@@ -53,5 +72,55 @@ Application médicale de suivi de patients chroniques.
 - Agents Claude spécialisés : `/backend`, `/frontend`, `/devops`
 
 ---
+
+### 2026-05-10 — Audit et identification des améliorations (Session 3)
+
+**Objectif :** Analyse complète du code source pour établir une roadmap d'améliorations.
+
+**10 points identifiés :**
+
+#### 🔴 Priorité haute
+1. **JWT + RBAC** — `SecurityConfig` laisse tout ouvert. `@EnableMethodSecurity` présent mais inutilisé. `ReponseController` utilise `UUID.randomUUID()` au lieu du user du token. Email médecin hardcodé dans `NotificationService`.
+2. **Flyway** — `ddl-auto: update` en prod (risqué). Migrations commentées dans `pom.xml`.
+3. **Modèle IA obsolète** — `OrchestratorAgentService` utilise `claude-opus-4-5` (retiré). Passer à `claude-sonnet-4-6`. Prompt caching absent → coût et latence inutiles.
+
+#### 🟠 Priorité moyenne
+4. **Parsing JSON naïf** — `OrchestratorAgentService.extractJsonField()` utilise `indexOf` au lieu d'`ObjectMapper`.
+5. **N+1 queries** — `AnalyticsService.getCohorteData()` exécute une requête SQL par réponse pour charger les alertes.
+6. **Analytics hardcodés** — `tauxGlobal` normalisé sur 10 de façon arbitraire ; taux complétion fixé à `0.85`.
+7. **Relation Patient-Médecin manquante** — impossible d'envoyer l'email au bon médecin traitant.
+
+#### 🟡 Priorité basse
+8. **`isDue` basé sur position** — 5 premiers templates marqués "à faire" sans vérifier les dates du plan.
+9. **`relativeTime()` non traduite** — hardcodé en français malgré ngx-translate (fr/en/nl).
+10. **Bundle 501 kB** — légèrement au-dessus du budget Angular (500 kB).
+
+---
+
+---
+
+### 2026-05-10 — Implémentation Étapes 1, 2, 3, 4 ROADMAP (Session 4)
+
+**Objectif :** Exécuter les 4 premières étapes de la roadmap. Builds Maven et Angular validés.
+
+#### Étape 1 — Quick wins IA ✅
+- Modèle `OrchestratorAgentService` mis à jour : `claude-opus-4-5` → `claude-sonnet-4-6`
+- Prompt caching activé via `TextBlockParam` + `CacheControlEphemeral` (SDK Anthropic Java 2.15.0)
+- Parsing JSON robuste : `extractJsonField()` remplacé par `ObjectMapper.readTree()` + gestion blocs markdown
+
+#### Étape 2 — Flyway migrations ✅
+- Dépendances Flyway décommentées dans `pom.xml`
+- Scripts `V1__init_schema.sql` et `V2__questionnaire_schema.sql` créés à partir de l'introspection PostgreSQL
+- `application-prod.yml` : `flyway.enabled: true`, `baseline-on-migrate: true`, `ddl-auto: validate`
+
+#### Étape 3 — Performances analytics ✅
+- N+1 supprimé dans `getCohorteData()` : `findByReponseIdIn()` (batch) au lieu de 1 requête par réponse
+- `getCompletionRates()` : taux réel = `réponses / plansActifs` (était `total / 10.0` hardcodé)
+- `getAlertesTrend()` : taux hebdomadaire réel = `reponsesWeek / totalPlansActifs` (était `0.85` hardcodé)
+
+#### Étape 4 — Corrections frontend ⏳ (4.3 en attente)
+- `isDue` calculé depuis `nextDueDate` backend via `PlanService.getPlansActifsPatient()` + `forkJoin`
+- `relativeTime()` traduit via `TranslateService` — clés `common.time.*` ajoutées en fr/en/nl
+- Bundle : 501.25 kB (1.25 kB au-dessus du budget — étape 4.3 bundle à traiter séparément)
 
 > Ce fichier est mis à jour après chaque session de travail significative.
