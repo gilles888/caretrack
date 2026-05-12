@@ -11,5 +11,6 @@ export interface QuestionnaireTemplate {
   licenceInfo: string;
   items: QuestionItem[];
   isDue?: boolean;
+  nextDueDate?: string;
   lastCompletedAt?: string;
 }

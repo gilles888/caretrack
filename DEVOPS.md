@@ -153,15 +153,34 @@ sudo certbot renew --nginx
 ## Scripts de déploiement
 
 ### `fix-deploy.sh` (recommandé — sudo requis)
-Corrige les permissions root, rebuild, redémarre via systemd, recharge Nginx.
+Déploiement complet : corrige les permissions, met à jour le service systemd, build backend + frontend, copie la config Nginx, recharge tout.
+
+> **JWT_SECRET** : générer une seule fois avec `openssl rand -hex 32` et conserver dans un gestionnaire de mots de passe.
+> Changer ce secret entre deux déploiements invalide tous les tokens actifs.
+
 ```bash
-sudo CARETRACK_DB_PASSWORD="..." /home/claude-worker/caretrack/fix-deploy.sh
+# ── Déploiement complet (commande de référence) ──────────────────────────────
+sudo CARETRACK_DB_PASSWORD="MotDePasseSecure123!" \
+     JWT_SECRET="<secret-openssl-rand-hex-32>" \
+     ./fix-deploy.sh
+
+# ── Backend seul (SKIP_FRONTEND=1) ───────────────────────────────────────────
+sudo CARETRACK_DB_PASSWORD="MotDePasseSecure123!" \
+     JWT_SECRET="<secret>" \
+     SKIP_FRONTEND=1 ./fix-deploy.sh
+
+# ── Frontend seul (SKIP_BACKEND=1) ───────────────────────────────────────────
+sudo CARETRACK_DB_PASSWORD="MotDePasseSecure123!" \
+     JWT_SECRET="<secret>" \
+     SKIP_BACKEND=1 ./fix-deploy.sh
 ```
 
-### `deploy.sh` (sans sudo)
+> **Note** : `ANTHROPIC_API_KEY` est optionnel — uniquement si l'orchestrateur IA (`/api/v1/orchestrator`) est utilisé.
+
+### `deploy.sh` (sans sudo — fallback)
 Build Maven + déploiement. Utilise `sudo -n systemctl restart` ou bascule sur `nohup`.
 ```bash
-CARETRACK_DB_PASSWORD="..." ./deploy.sh backend|frontend|all
+CARETRACK_DB_PASSWORD="..." JWT_SECRET="..." ./deploy.sh backend|frontend|all
 ```
 
 ### `setup-server.sh` (une seule fois — sudo requis)
@@ -202,7 +221,7 @@ sudo CARETRACK_DB_PASSWORD="..." ./setup-server.sh
 
 ---
 
-## État actuel des services (2026-05-09)
+## État actuel des services (2026-05-12)
 
 | Service | État | URL |
 |---|---|---|
@@ -218,9 +237,13 @@ sudo CARETRACK_DB_PASSWORD="..." ./setup-server.sh
 
 | Variable | Requis | Description |
 |---|---|---|
-| `CARETRACK_DB_PASSWORD` | Oui | Mot de passe PostgreSQL user `caretrack` |
+| `CARETRACK_DB_PASSWORD` | **Oui** | Mot de passe PostgreSQL user `caretrack` |
+| `JWT_SECRET` | **Oui** | Secret HMAC-SHA256 pour les tokens JWT (≥32 chars) — générer avec `openssl rand -hex 32` |
 | `ANTHROPIC_API_KEY` | Non | Clé API Anthropic pour l'orchestrateur IA |
 | `MAIL_HOST` | Non | Serveur SMTP (défaut: `localhost`) |
 | `MAIL_PORT` | Non | Port SMTP (défaut: `587`) |
 | `MAIL_USERNAME` | Non | Login SMTP |
 | `MAIL_PASSWORD` | Non | Mot de passe SMTP |
+
+> **Note** : `fix-deploy.sh` valide que `JWT_SECRET` est présent et fait au moins 32 caractères avant de déployer.
+> Conserver le même `JWT_SECRET` entre les déploiements — le changer invalide tous les tokens actifs.

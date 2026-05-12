@@ -1,13 +1,17 @@
 import { Injectable, inject, signal, computed, effect, linkedSignal } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { QuestionnaireTemplate } from '../models/questionnaire-template.model';
 import { AlerteDto } from '../models/alerte.model';
+import { PatientPlanDto } from '../models/plan.model';
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { AlerteService } from '../services/alerte.service';
+import { PlanService } from '../services/plan.service';
 
 @Injectable({ providedIn: 'root' })
 export class QuestionnaireStore {
   private questionnaireService = inject(QuestionnaireService);
   private alerteService = inject(AlerteService);
+  private planService = inject(PlanService);
 
   // State signals
   readonly templates = signal<QuestionnaireTemplate[]>([]);
@@ -49,23 +53,54 @@ export class QuestionnaireStore {
     }
   });
 
-  loadTemplates(submittedCodes: string[] = []): void {
+  loadTemplates(submittedCodes: string[] = [], patientId?: string): void {
     this.loading.set(true);
     this.error.set(null);
-    this.questionnaireService.getTemplates().subscribe({
-      next: (data) => {
-        const withDue = data.map((t, i) => ({
-          ...t,
-          isDue: i < 5 && !submittedCodes.includes(t.code),
-        }));
-        this.templates.set(withDue);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set(err.message ?? 'Erreur chargement templates');
-        this.loading.set(false);
-      },
-    });
+
+    if (patientId) {
+      // Charger les templates et les plans actifs en parallèle
+      forkJoin({
+        templates: this.questionnaireService.getTemplates(),
+        plans: this.planService.getPlansActifsPatient(patientId),
+      }).subscribe({
+        next: ({ templates, plans }) => {
+          const now = new Date();
+          // Indexer les plans par code template pour lookup O(1)
+          const planByCode = new Map<string, PatientPlanDto>(
+            plans.map(p => [p.template.code, p])
+          );
+          const withDue = templates.map(t => {
+            const plan = planByCode.get(t.code);
+            const nextDueDate = plan?.nextDueDate ?? undefined;
+            return {
+              ...t,
+              nextDueDate,
+              isDue: !!nextDueDate
+                && new Date(nextDueDate) <= now
+                && !submittedCodes.includes(t.code),
+            };
+          });
+          this.templates.set(withDue);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(err.message ?? 'Erreur chargement templates');
+          this.loading.set(false);
+        },
+      });
+    } else {
+      // Fallback sans contexte patient : isDue non calculable depuis le backend
+      this.questionnaireService.getTemplates().subscribe({
+        next: (data) => {
+          this.templates.set(data.map(t => ({ ...t, isDue: false })));
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(err.message ?? 'Erreur chargement templates');
+          this.loading.set(false);
+        },
+      });
+    }
   }
 
   markSubmitted(code: string): void {

@@ -112,7 +112,24 @@ curl -H "Authorization: Bearer <token>" https://caretrack.gilmotech.be/api/v1/al
 ### State management frontend
 - `questionnaire.store.ts` — SignalStore des questionnaires
 - `plan-builder.store.ts` — SignalStore de l'éditeur de plan
-- Services : `alerte.service`, `analytics.service`, `dashboard.service`, `plan.service`, `questionnaire.service`, `reponse.service`, `export.service`
+- Services : `auth.service`, `alerte.service`, `analytics.service`, `dashboard.service`, `plan.service`, `questionnaire.service`, `reponse.service`, `export.service`
+
+### AuthService (`core/services/auth.service.ts`)
+Service central d'authentification Phase 2 :
+- `login(email, password)` → `Observable<AuthResponse>` — appel API réel (prod) ou mock (dev)
+- `logout()` → vide localStorage, redirige `/login`
+- `isAuthenticated()` → vérifie token JWT (`caretrack_token`) et claim `exp`
+- `getRoles()` / `hasRole(...roles)` — lecture des rôles depuis le signal
+- Signal `currentUser` (`{userId, email, roles}`) — mis à jour à la connexion/déconnexion
+- Clé localStorage : `caretrack_token` (JWT) + `caretrack_user` (JSON)
+- En mode `useMocks: true` : délègue à `MockDataService` et construit un faux JWT sans bibliothèque externe
+
+### Routes Angular
+| Route | Page | Auth |
+|---|---|---|
+| `/login` | Page de connexion JWT | Publique |
+| `/unauthorized` | Page accès refusé | Publique |
+| `/` | Redirige selon auth | Smart redirect |
 
 ## Environnements Angular
 

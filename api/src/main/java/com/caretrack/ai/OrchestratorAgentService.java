@@ -8,6 +8,8 @@ import com.caretrack.ai.dto.OrchestratorResponse;
 import com.caretrack.domain.PatientRepository;
 import com.caretrack.questionnaire.repository.AlerteQuestionnaireRepository;
 import com.caretrack.questionnaire.repository.ReponseQuestionnaireRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,7 @@ public class OrchestratorAgentService {
 
     private static final Logger log = LoggerFactory.getLogger(OrchestratorAgentService.class);
 
-    private static final String MODEL = "claude-opus-4-5";
+    private static final String MODEL = "claude-sonnet-4-6";
     private static final String SYSTEM_PROMPT = """
             Tu es un assistant clinique pour CareTrack, une application de suivi médical.
             Tu as accès à des outils pour récupérer les données des patients, leurs réponses
@@ -42,16 +44,19 @@ public class OrchestratorAgentService {
     private final PatientRepository patientRepository;
     private final ReponseQuestionnaireRepository reponseRepository;
     private final AlerteQuestionnaireRepository alerteRepository;
+    private final ObjectMapper objectMapper;
 
     public OrchestratorAgentService(
             AnthropicClient client,
             PatientRepository patientRepository,
             ReponseQuestionnaireRepository reponseRepository,
-            AlerteQuestionnaireRepository alerteRepository) {
+            AlerteQuestionnaireRepository alerteRepository,
+            ObjectMapper objectMapper) {
         this.client = client;
         this.patientRepository = patientRepository;
         this.reponseRepository = reponseRepository;
         this.alerteRepository = alerteRepository;
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -75,7 +80,11 @@ public class OrchestratorAgentService {
             MessageCreateParams.Builder paramsBuilder = MessageCreateParams.builder()
                     .model(MODEL)
                     .maxTokens(2048L)
-                    .system(SYSTEM_PROMPT)
+                    .systemOfTextBlockParams(List.of(
+                            TextBlockParam.builder()
+                                    .text(SYSTEM_PROMPT)
+                                    .cacheControl(CacheControlEphemeral.builder().build())
+                                    .build()))
                     .messages(messages);
 
             for (Tool tool : tools) {
@@ -183,28 +192,26 @@ public class OrchestratorAgentService {
 
         log.debug("Réponse brute du modèle: {}", text);
 
-        boolean hasAlert = text.toLowerCase().contains("\"alertgenerated\":true")
-                || text.toLowerCase().contains("\"alertgenerated\": true");
-        String analysis = extractJsonField(text, "analysis");
-        String recommendation = extractJsonField(text, "recommendation");
-        return new OrchestratorResponse(analysis, recommendation, hasAlert);
-    }
-
-    /**
-     * Extraction naïve d'un champ JSON de type string depuis un texte brut.
-     * En production, utiliser {@code ObjectMapper} pour un parsing robuste.
-     */
-    private String extractJsonField(String json, String field) {
-        String key = "\"" + field + "\":\"";
-        int start = json.indexOf(key);
-        if (start < 0) {
-            key = "\"" + field + "\": \"";
-            start = json.indexOf(key);
+        // Extraire le bloc JSON si le modèle l'entoure de balises markdown code
+        String json = text.trim();
+        if (json.startsWith("```")) {
+            int start = json.indexOf('\n');
+            int end = json.lastIndexOf("```");
+            if (start >= 0 && end > start) {
+                json = json.substring(start + 1, end).trim();
+            }
         }
-        if (start < 0) return "N/A";
-        start += key.length();
-        int end = json.indexOf("\"", start);
-        return end > start ? json.substring(start, end) : "N/A";
+
+        try {
+            JsonNode root = objectMapper.readTree(json);
+            String analysis = root.path("analysis").asText("N/A");
+            String recommendation = root.path("recommendation").asText("N/A");
+            boolean hasAlert = root.path("alertGenerated").asBoolean(false);
+            return new OrchestratorResponse(analysis, recommendation, hasAlert);
+        } catch (Exception e) {
+            log.warn("Impossible de parser la réponse JSON du modèle: {}", e.getMessage());
+            return new OrchestratorResponse("N/A", "N/A", false);
+        }
     }
 
     private String buildUserPrompt(OrchestratorRequest request) {

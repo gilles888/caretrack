@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { QuestionnaireStore } from '../../store/questionnaire.store';
 import { AlerteDto } from '../../models/alerte.model';
 import { MessageModule } from 'primeng/message';
@@ -275,6 +275,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 })
 export class AlertesDashboardPage implements OnInit {
   protected readonly store = inject(QuestionnaireStore);
+  private readonly translate = inject(TranslateService);
   protected readonly skeletonRows = [1, 2, 3];
 
   ngOnInit(): void {
@@ -294,9 +295,10 @@ export class AlertesDashboardPage implements OnInit {
     const diff = Date.now() - new Date(iso).getTime();
     const h = Math.floor(diff / 3_600_000);
     const m = Math.floor(diff / 60_000);
-    if (h >= 24) return `il y a ${Math.floor(h / 24)}j`;
-    if (h >= 1) return `il y a ${h}h`;
-    if (m >= 1) return `il y a ${m} min`;
-    return "à l'instant";
+    const days = Math.floor(h / 24);
+    if (h >= 24) return this.translate.instant('common.time.daysAgo', { count: days });
+    if (h >= 1) return this.translate.instant('common.time.hoursAgo', { count: h });
+    if (m >= 1) return this.translate.instant('common.time.minutesAgo', { count: m });
+    return this.translate.instant('common.time.justNow');
   }
 }

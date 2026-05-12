@@ -9,6 +9,7 @@ import com.caretrack.questionnaire.domain.QuestionnaireTemplate;
 import com.caretrack.questionnaire.domain.ReponseQuestionnaire;
 import com.caretrack.questionnaire.enums.AlerteNiveau;
 import com.caretrack.questionnaire.repository.AlerteQuestionnaireRepository;
+import com.caretrack.questionnaire.repository.PatientQuestionnairePlanRepository;
 import com.caretrack.questionnaire.repository.QuestionnaireTemplateRepository;
 import com.caretrack.questionnaire.repository.ReponseQuestionnaireRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,6 +46,7 @@ public class AnalyticsService {
     private final ReponseQuestionnaireRepository reponseRepo;
     private final AlerteQuestionnaireRepository alerteRepo;
     private final QuestionnaireTemplateRepository templateRepo;
+    private final PatientQuestionnairePlanRepository planRepo;
 
     /**
      * Retourne l'évolution longitudinale d'un patient pour un questionnaire donné.
@@ -108,11 +108,19 @@ public class AnalyticsService {
         List<ReponseQuestionnaire> reponses = reponseRepo
                 .findByDiseaseCodeAndPeriod(diseaseCode, from, to);
 
-        // Récupérer le niveau d'alerte maximum par réponse
-        Map<UUID, String> alerteNiveauByReponse = new HashMap<>();
-        reponses.forEach(r -> alerteRepo.findByReponseId(r.getId()).stream()
-                .max(Comparator.comparingInt(a -> a.getNiveau().ordinal()))
-                .ifPresent(a -> alerteNiveauByReponse.put(r.getId(), a.getNiveau().name())));
+        // Récupérer le niveau d'alerte maximum par réponse — une seule requête batch (évite le N+1)
+        List<UUID> reponseIds = reponses.stream().map(ReponseQuestionnaire::getId).toList();
+        Map<UUID, String> alerteNiveauByReponse = alerteRepo.findByReponseIdIn(reponseIds).stream()
+                .collect(Collectors.toMap(
+                        a -> a.getReponse().getId(),
+                        a -> a.getNiveau().name(),
+                        (existing, replacement) -> {
+                            // Conserver le niveau le plus critique
+                            int existingOrd = AlerteNiveau.valueOf(existing).ordinal();
+                            int replacementOrd = AlerteNiveau.valueOf(replacement).ordinal();
+                            return existingOrd >= replacementOrd ? existing : replacement;
+                        }
+                ));
 
         return reponses.stream()
                 .map(r -> {
@@ -153,7 +161,11 @@ public class AnalyticsService {
                             tpl.getCode(), from, to);
 
             long total = reponses.size();
-            double tauxGlobal = total > 0 ? Math.min(1.0, total / 10.0) : 0.0;
+            // Taux global = réponses reçues / plans actifs pour ce template
+            long plansActifs = planRepo.findAll().stream()
+                    .filter(p -> p.isActive() && p.getTemplate().getId().equals(tpl.getId()))
+                    .count();
+            double tauxGlobal = plansActifs > 0 ? Math.min(1.0, (double) total / plansActifs) : 0.0;
 
             // Taux par maladie : nombre de réponses normalisé sur 5 attendues
             Map<String, Double> parMaladie = reponses.stream()
@@ -194,6 +206,17 @@ public class AnalyticsService {
                                 .with(WeekFields.ISO.dayOfWeek(), 1)
                 ));
 
+        // Taux de complétion hebdomadaire réel : réponses reçues / plans actifs — 2 requêtes en tout
+        Map<LocalDate, Long> reponsesParSemaine = reponseRepo
+                .findByCompletedAtBetween(from, to).stream()
+                .collect(Collectors.groupingBy(
+                        r -> r.getCompletedAt().toLocalDate().with(WeekFields.ISO.dayOfWeek(), 1),
+                        Collectors.counting()
+                ));
+        long totalPlansActifs = planRepo.findAll().stream()
+                .filter(p -> p.isActive())
+                .count();
+
         // Générer un point pour chaque semaine de la période, y compris les semaines vides
         List<AlerteTrendPointDto> result = new ArrayList<>();
         LocalDate current = from.toLocalDate().with(WeekFields.ISO.dayOfWeek(), 1);
@@ -206,7 +229,11 @@ public class AnalyticsService {
                     .filter(a -> a.getNiveau() == AlerteNiveau.WARNING).count();
             long nbCritical = weekAlertes.stream()
                     .filter(a -> a.getNiveau() == AlerteNiveau.CRITICAL).count();
-            result.add(new AlerteTrendPointDto(semaine, nbWarning, nbCritical, 0.85));
+            long reponsesWeek = reponsesParSemaine.getOrDefault(semaine, 0L);
+            double tauxCompletion = totalPlansActifs > 0
+                    ? Math.min(1.0, (double) reponsesWeek / totalPlansActifs)
+                    : 0.0;
+            result.add(new AlerteTrendPointDto(semaine, nbWarning, nbCritical, tauxCompletion));
             current = current.plusWeeks(1);
         }
 

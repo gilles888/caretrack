@@ -190,7 +190,7 @@ export class PatientQuestionnairesPage implements OnInit {
 
   ngOnInit(): void {
     const submitted = this.mockService.getSubmittedCodesForPatient(this.patientId);
-    this.store.loadTemplates(submitted);
+    this.store.loadTemplates(submitted, this.patientId || undefined);
     this.loadRecentSubmissions();
   }
 

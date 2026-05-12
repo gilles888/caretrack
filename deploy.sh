@@ -20,6 +20,7 @@ SPRING_OPTS="-Dspring.profiles.active=prod \
   -DDB_URL=jdbc:postgresql://localhost:5433/caretrackdb \
   -DDB_USER=caretrack \
   -DDB_PASSWORD=${CARETRACK_DB_PASSWORD:-changeme} \
+  -DJWT_SECRET=${JWT_SECRET:-dev-secret-change-in-production-minimum-32-chars} \
   -DAPP_URL=https://caretrack.gilmotech.be \
   -DMAIL_HOST=${MAIL_HOST:-localhost} \
   -DMAIL_PORT=${MAIL_PORT:-587} \

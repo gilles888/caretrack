@@ -5,16 +5,15 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { MockDataService } from '../mocks/mock-data.service';
-import { MockUser, UserRole } from '../models/user.model';
+import { AuthService, AuthResponse } from '../services/auth.service';
 import { LanguageSwitcherComponent } from '../../shared/components/language-switcher.component';
+import { environment } from '../../../environments/environment';
 
 interface QuickAccess {
   label: string;
   name: string;
   email: string;
   password: string;
-  role: UserRole;
   cssClass: string;
 }
 
@@ -116,40 +115,6 @@ interface QuickAccess {
       flex: 1;
       height: 1px;
       background: #e5e7eb;
-    }
-
-    .quick-btns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .quick-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 10px;
-      background: white;
-      cursor: pointer;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #374151;
-      transition: all 0.2s;
-    }
-
-    .quick-btn:hover {
-      border-color: #1565C0;
-      background: #EFF6FF;
-      color: #1565C0;
-    }
-
-    .quick-btn.teal:hover {
-      border-color: #00796B;
-      background: #E0F2F1;
-      color: #00796B;
     }
 
     .error-box {
@@ -255,6 +220,18 @@ interface QuickAccess {
       opacity: 0.5;
       cursor: not-allowed;
     }
+
+    /* Prod hint */
+    .prod-hint {
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      color: #1E40AF;
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
   `],
   template: `
     <!-- Sélecteur de langue — coin supérieur droit -->
@@ -338,71 +315,76 @@ interface QuickAccess {
           />
         </form>
 
-        <!-- Separateur dev -->
-        <div class="divider">{{ 'login.quickAccess' | translate }}</div>
+        <!-- Accès rapide — uniquement en mode mock (dev) -->
+        @if (isMockMode) {
+          <div class="divider">{{ 'login.quickAccess' | translate }}</div>
 
-        <!-- Medecins -->
-        <p class="quick-section-title">{{ 'login.quickDoctors' | translate }}</p>
-        <div class="quick-grid">
-          @for (entry of quickMedecins; track entry.email) {
-            <button
-              type="button"
-              class="quick-chip medecin"
-              (click)="loginQuick(entry)"
-              [disabled]="loading()"
-              [attr.aria-label]="('login.quickLoginLabel' | translate) + ' ' + entry.name"
-            >
-              <span class="chip-role">{{ entry.label }}</span>
-              <span class="chip-name">{{ entry.name }}</span>
-            </button>
-          }
-        </div>
+          <!-- Medecins -->
+          <p class="quick-section-title">{{ 'login.quickDoctors' | translate }}</p>
+          <div class="quick-grid">
+            @for (entry of quickMedecins; track entry.email) {
+              <button
+                type="button"
+                class="quick-chip medecin"
+                (click)="loginQuick(entry)"
+                [disabled]="loading()"
+                [attr.aria-label]="('login.quickLoginLabel' | translate) + ' ' + entry.name"
+              >
+                <span class="chip-role">{{ entry.label }}</span>
+                <span class="chip-name">{{ entry.name }}</span>
+              </button>
+            }
+          </div>
 
-        <!-- Patients -->
-        <p class="quick-section-title" style="margin-top:12px;">{{ 'login.quickPatients' | translate }}</p>
-        <div class="quick-grid">
-          @for (entry of quickPatients; track entry.email) {
-            <button
-              type="button"
-              class="quick-chip"
-              (click)="loginQuick(entry)"
-              [disabled]="loading()"
-              [attr.aria-label]="('login.quickLoginLabel' | translate) + ' ' + entry.name"
-            >
-              <span class="chip-role">{{ entry.label }}</span>
-              <span class="chip-name">{{ entry.name }}</span>
-            </button>
-          }
-        </div>
+          <!-- Patients -->
+          <p class="quick-section-title" style="margin-top:12px;">{{ 'login.quickPatients' | translate }}</p>
+          <div class="quick-grid">
+            @for (entry of quickPatients; track entry.email) {
+              <button
+                type="button"
+                class="quick-chip"
+                (click)="loginQuick(entry)"
+                [disabled]="loading()"
+                [attr.aria-label]="('login.quickLoginLabel' | translate) + ' ' + entry.name"
+              >
+                <span class="chip-role">{{ entry.label }}</span>
+                <span class="chip-name">{{ entry.name }}</span>
+              </button>
+            }
+          </div>
 
-        <!-- Admin -->
-        <p class="quick-section-title" style="margin-top:12px;">{{ 'login.quickAdmin' | translate }}</p>
-        <div class="quick-grid">
-          @for (entry of quickAdmins; track entry.email) {
-            <button
-              type="button"
-              class="quick-chip admin"
-              (click)="loginQuick(entry)"
-              [disabled]="loading()"
-              [attr.aria-label]="('login.quickLoginLabel' | translate) + ' ' + entry.name"
-            >
-              <span class="chip-role">{{ entry.label }}</span>
-              <span class="chip-name">{{ entry.name }}</span>
-            </button>
-          }
-        </div>
+          <!-- Admin -->
+          <p class="quick-section-title" style="margin-top:12px;">{{ 'login.quickAdmin' | translate }}</p>
+          <div class="quick-grid">
+            @for (entry of quickAdmins; track entry.email) {
+              <button
+                type="button"
+                class="quick-chip admin"
+                (click)="loginQuick(entry)"
+                [disabled]="loading()"
+                [attr.aria-label]="('login.quickLoginLabel' | translate) + ' ' + entry.name"
+              >
+                <span class="chip-role">{{ entry.label }}</span>
+                <span class="chip-name">{{ entry.name }}</span>
+              </button>
+            }
+          </div>
 
-        <p style="text-align:center;color:#9CA3AF;font-size:0.75rem;margin-top:1.25rem;margin-bottom:0;">
-          {{ 'login.simulation' | translate }}
-        </p>
+          <p style="text-align:center;color:#9CA3AF;font-size:0.75rem;margin-top:1.25rem;margin-bottom:0;">
+            {{ 'login.simulation' | translate }}
+          </p>
+        }
+
       </div>
     </div>
   `,
 })
 export class LoginComponent {
   private readonly router = inject(Router);
-  private readonly mockDataService = inject(MockDataService);
+  private readonly authService = inject(AuthService);
   private readonly translate = inject(TranslateService);
+
+  readonly isMockMode = environment.useMocks;
 
   email = '';
   password = '';
@@ -410,76 +392,20 @@ export class LoginComponent {
   loading = signal(false);
 
   readonly quickMedecins: QuickAccess[] = [
-    {
-      label: 'Medecin',
-      name: 'S. Martin',
-      email: 'sophie.martin@caretrack.fr',
-      password: 'Medecin1234!',
-      role: 'MEDECIN',
-      cssClass: 'medecin',
-    },
-    {
-      label: 'Medecin',
-      name: 'K. Benali',
-      email: 'karim.benali@caretrack.fr',
-      password: 'Medecin1234!',
-      role: 'MEDECIN',
-      cssClass: 'medecin',
-    },
-    {
-      label: 'Medecin',
-      name: 'A. Rousseau',
-      email: 'anne.rousseau@caretrack.fr',
-      password: 'Medecin1234!',
-      role: 'MEDECIN',
-      cssClass: 'medecin',
-    },
+    { label: 'Medecin', name: 'S. Martin',  email: 'sophie.martin@caretrack.fr',  password: 'Medecin1234!', cssClass: 'medecin' },
+    { label: 'Medecin', name: 'K. Benali',  email: 'karim.benali@caretrack.fr',   password: 'Medecin1234!', cssClass: 'medecin' },
+    { label: 'Medecin', name: 'A. Rousseau', email: 'anne.rousseau@caretrack.fr', password: 'Medecin1234!', cssClass: 'medecin' },
   ];
 
   readonly quickPatients: QuickAccess[] = [
-    {
-      label: 'Patient',
-      name: 'J. Dupont',
-      email: 'jean.dupont@gmail.com',
-      password: 'Patient1234!',
-      role: 'PATIENT',
-      cssClass: '',
-    },
-    {
-      label: 'Patient',
-      name: 'M. Leblanc',
-      email: 'marie.leblanc@gmail.com',
-      password: 'Patient1234!',
-      role: 'PATIENT',
-      cssClass: '',
-    },
-    {
-      label: 'Patient',
-      name: 'P. Moreau',
-      email: 'pierre.moreau@hotmail.com',
-      password: 'Patient1234!',
-      role: 'PATIENT',
-      cssClass: '',
-    },
-    {
-      label: 'Patient',
-      name: 'F. Ouali',
-      email: 'fatima.ouali@gmail.com',
-      password: 'Patient1234!',
-      role: 'PATIENT',
-      cssClass: '',
-    },
+    { label: 'Patient', name: 'J. Dupont',  email: 'jean.dupont@gmail.com',            password: 'Patient1234!', cssClass: '' },
+    { label: 'Patient', name: 'M. Leblanc', email: 'marie.leblanc@gmail.com',           password: 'Patient1234!', cssClass: '' },
+    { label: 'Patient', name: 'P. Moreau',  email: 'pierre.moreau@hotmail.com',         password: 'Patient1234!', cssClass: '' },
+    { label: 'Patient', name: 'F. Ouali',   email: 'fatima.ouali@gmail.com',            password: 'Patient1234!', cssClass: '' },
   ];
 
   readonly quickAdmins: QuickAccess[] = [
-    {
-      label: 'Admin',
-      name: 'Principal',
-      email: 'admin@caretrack.fr',
-      password: 'Admin5678!',
-      role: 'ADMIN',
-      cssClass: 'admin',
-    },
+    { label: 'Admin', name: 'Principal', email: 'admin@caretrack.fr', password: 'Admin5678!', cssClass: 'admin' },
   ];
 
   onSubmit(): void {
@@ -489,10 +415,10 @@ export class LoginComponent {
       return;
     }
     this.loading.set(true);
-    this.mockDataService.login(this.email, this.password).subscribe({
-      next: (user) => {
+    this.authService.login(this.email, this.password).subscribe({
+      next: (res) => {
         this.loading.set(false);
-        this.navigateByRole(user);
+        this.navigateByRoles(res.roles);
       },
       error: () => {
         this.loading.set(false);
@@ -506,10 +432,10 @@ export class LoginComponent {
     this.email = entry.email;
     this.password = entry.password;
     this.loading.set(true);
-    this.mockDataService.login(entry.email, entry.password).subscribe({
-      next: (user) => {
+    this.authService.login(entry.email, entry.password).subscribe({
+      next: (res) => {
         this.loading.set(false);
-        this.navigateByRole(user);
+        this.navigateByRoles(res.roles);
       },
       error: () => {
         this.loading.set(false);
@@ -518,19 +444,12 @@ export class LoginComponent {
     });
   }
 
-  private navigateByRole(user: MockUser): void {
-    switch (user.role) {
-      case 'MEDECIN':
-        this.router.navigateByUrl('pro/formulaires');
-        break;
-      case 'ADMIN':
-      case 'ADMIN_SUPPORT':
-        this.router.navigateByUrl('pro/formulaires');
-        break;
-      case 'PATIENT':
-      default:
-        this.router.navigateByUrl('patient/questionnaires');
-        break;
+  private navigateByRoles(roles: string[]): void {
+    if (roles.includes('PATIENT')) {
+      this.router.navigateByUrl('/patient/questionnaires');
+    } else {
+      // MEDECIN, ADMIN, ADMIN_SUPPORT, INFIRMIER → pro dashboard
+      this.router.navigateByUrl('/pro/alertes');
     }
   }
 }

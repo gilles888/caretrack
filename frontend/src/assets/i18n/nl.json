@@ -354,6 +354,12 @@
     "noData": "Geen gegevens beschikbaar",
     "appName": "CareTrack",
     "back": "Terug",
-    "refresh": "Vernieuwen"
+    "refresh": "Vernieuwen",
+    "time": {
+      "justNow": "zojuist",
+      "minutesAgo": "{{count}} min geleden",
+      "hoursAgo": "{{count}}u geleden",
+      "daysAgo": "{{count}}d geleden"
+    }
   }
 }

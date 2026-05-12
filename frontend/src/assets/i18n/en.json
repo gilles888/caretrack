@@ -354,6 +354,12 @@
     "noData": "No data available",
     "appName": "CareTrack",
     "back": "Back",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "time": {
+      "justNow": "just now",
+      "minutesAgo": "{{count}} min ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago"
+    }
   }
 }

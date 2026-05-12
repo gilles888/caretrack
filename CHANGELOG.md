@@ -5,6 +5,56 @@ Format : `[DATE] [COMPOSANT] — Description`
 
 ---
 
+## [2026-05-11] — Frontend Phase 2 : câblage JWT (AuthService + guards + intercepteur + LoginPage)
+
+### Ajouté (frontend)
+
+**AuthService** (`frontend/src/app/core/services/auth.service.ts`) — nouveau service central d'authentification :
+- `login(email, password)` : appelle `POST /api/v1/auth/login` en prod, délègue à `MockDataService` en mode dev (`useMocks: true`)
+- Décodage manuel du JWT via `atob` sans bibliothèque externe
+- Stocke la session dans `localStorage` (`caretrack_token`, `caretrack_user`)
+- Synchronise les clés legacy (`access_token`, `user_role`, `user_id`) pour compatibilité `MockDataService`
+- Signal Angular `currentUser` (readonly) contenant `{userId, email, roles}`
+- `isAuthenticated()` : vérifie présence et expiration du JWT via claim `exp`
+- `getRoles()`, `hasRole(...roles)`, `getToken()`
+- `logout()` : vide le localStorage et redirige vers `/login`
+- Mock JWT généré côté client en dev (mode `useMocks: true`), valide 24h
+
+### Modifié (frontend)
+
+**`auth.interceptor.ts`** :
+- Lit le token via `AuthService.getToken()` (clé `caretrack_token`)
+- Ajoute `Authorization: Bearer <token>` sur toutes les requêtes API sauf `/auth/login`
+- Gère les 401 : appelle `authService.logout()` → redirection `/login`
+
+**`auth.guard.ts`** :
+- Utilise `AuthService.isAuthenticated()` au lieu de la lecture directe de `localStorage`
+- Redirection vers `/login` si non authentifié
+
+**`role.guard.ts`** :
+- Utilise `AuthService.hasRole(...roles)` (tableau de rôles, support multi-rôles)
+- Redirection vers `/unauthorized`
+
+**`login.component.ts`** :
+- Remplace l'usage direct de `MockDataService` par `AuthService.login()`
+- En prod (`useMocks: false`), appel réel `POST /api/v1/auth/login`
+- En dev (`useMocks: true`), délégation au mock — les boutons d'accès rapide restent visibles uniquement en mode mock
+- Navigation post-login : PATIENT → `/patient/questionnaires`, autres rôles → `/pro/alertes`
+
+**`app.routes.ts`** :
+- Route `''` avec `canActivate: [rootGuard]` : redirige vers `/pro/alertes` (auth) ou `/login` (non auth)
+
+### Impact UX
+- Les utilisateurs non authentifiés sont redirigés vers `/login`
+- Session persistée entre les rechargements (JWT en localStorage)
+- Expiration du token détectée silencieusement → déconnexion automatique
+- Les boutons de connexion rapide (mock) restent visibles uniquement en développement
+
+### Build
+- Angular production : `BUILD SUCCESS` (0 erreur TypeScript)
+
+---
+
 ## [2026-05-11] — Sécurité Phase 2 : JWT stateless + RBAC complet
 
 ### Ajouté (backend — Étapes 5.1 à 5.8)

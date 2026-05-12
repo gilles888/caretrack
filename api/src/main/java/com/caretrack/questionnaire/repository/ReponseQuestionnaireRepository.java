@@ -64,4 +64,7 @@ public interface ReponseQuestionnaireRepository extends JpaRepository<ReponseQue
         @Param("diseaseCode") String diseaseCode,
         @Param("from") LocalDateTime from,
         @Param("to") LocalDateTime to);
+
+    // Analytics : toutes réponses sur une période (tous patients, tous templates)
+    List<ReponseQuestionnaire> findByCompletedAtBetween(LocalDateTime from, LocalDateTime to);
 }

@@ -31,4 +31,7 @@ public interface AlerteQuestionnaireRepository extends JpaRepository<AlerteQuest
     // Analytics : alertes d'un patient sur une période
     List<AlerteQuestionnaire> findByPatientIdAndCreatedAtBetweenOrderByCreatedAtAsc(
         UUID patientId, LocalDateTime from, LocalDateTime to);
+
+    // Analytics batch : alertes pour une liste de reponseIds (évite le N+1 dans getCohorteData)
+    List<AlerteQuestionnaire> findByReponseIdIn(List<UUID> reponseIds);
 }

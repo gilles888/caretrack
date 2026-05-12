@@ -9,6 +9,20 @@ Application médicale de suivi de patients chroniques.
 
 ## Chronologie
 
+### 2026-05-11 — Frontend Phase 2 : câblage JWT complet
+
+Câblage du JWT côté Angular (Phase 2) :
+
+- **`AuthService`** : service central gérant login/logout, décodage JWT (`atob`), signals Angular `currentUser`, `isLoggedIn`. Supporte prod (appel API réel) et dev (mock via `MockDataService`).
+- **Intercepteur HTTP** mis à jour : injecte `Authorization: Bearer` sur toutes les requêtes API, gère 401 → logout automatique.
+- **Guards** mis à jour : `authGuard` et `roleGuard` utilisent `AuthService` (plus de lecture directe localStorage).
+- **`LoginComponent`** mis à jour : utilise `AuthService.login()`, navigation post-login intelligente par rôle. Accès rapide dev masqué en prod.
+- **Route `/`** : redirige vers `/pro/alertes` (authentifié) ou `/login` (non authentifié).
+
+Build Angular production : SUCCESS.
+
+---
+
 ### 2026-05-11 — Sécurité Phase 2 : JWT stateless + RBAC
 
 Implémentation complète de la sécurité JWT + RBAC (étapes 5.1–5.8) :
