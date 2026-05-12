@@ -160,9 +160,8 @@ Déploiement complet : corrige les permissions, met à jour le service systemd, 
 
 ```bash
 # ── Déploiement complet (commande de référence) ──────────────────────────────
-sudo CARETRACK_DB_PASSWORD="MotDePasseSecure123!" \
-     JWT_SECRET="<secret-openssl-rand-hex-32>" \
-     ./fix-deploy.sh
+# Les secrets sont dans .env.prod (hors git, chmod 600)
+source .env.prod && sudo -E ./fix-deploy.sh
 
 # ── Backend seul (SKIP_FRONTEND=1) ───────────────────────────────────────────
 sudo CARETRACK_DB_PASSWORD="MotDePasseSecure123!" \
